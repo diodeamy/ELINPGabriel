@@ -22,7 +22,6 @@ void histogramFromTreeC() {
     UShort_t energy;
     TBranch *b_detector, *b_energy; 
     
-
     //
     TFile *digitizer_1 = TFile::Open("data/deuterated-digitizer_1.root");
     digitizer_1->GetObject("events", tree);
