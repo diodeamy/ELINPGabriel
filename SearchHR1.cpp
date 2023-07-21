@@ -41,7 +41,7 @@ void SearchHR1() {
    // TH1F *h = (TH1F*) f1->GetObject("events", tree);  //this imports a histogtam from tree; we don't have one
    for (int jentry=0; jentry<nentries; jentry++) {
       tree->GetEntry(jentry);
-      if (detectorId == 1) {
+      if (detectorId == 0) {
          h->Fill(energy);
         }
     }
