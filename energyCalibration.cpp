@@ -55,6 +55,6 @@ void energyCalibration() {
     h1->Draw();
 
     TSpectrum *s1 = new TSpectrum(2*npeaks);
-    Int_t pfound1 = s1->Search(h1, 2.9, "", 0.10);
+    Int_t pfound1 = s1->Search(h1, 2.7, "", 0.01);
     printf("Found %d candidate peaks to fit \n", pfound1);
 }
