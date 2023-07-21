@@ -24,7 +24,7 @@ void energyCalibration() {
     TTree *tree1, *tree2, *tree3;
     UShort_t detectorId;
     UShort_t energy;
-    Int_t npeaks = 5;
+    Int_t npeaks = 10;
     auto binnum = pow(2, 14);
     auto binmin = 0;
     auto binmax = pow(2, 14); 
@@ -55,6 +55,6 @@ void energyCalibration() {
     h1->Draw();
 
     TSpectrum *s1 = new TSpectrum(2*npeaks);
-    Int_t pfound1 = s1->Search(h1, 2.7, "", 0.01);
+    Int_t pfound1 = s1->Search(h1, 2.7,"", 0.05);
     printf("Found %d candidate peaks to fit \n", pfound1);
 }
