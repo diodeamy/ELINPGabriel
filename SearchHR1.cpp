@@ -19,7 +19,8 @@ void SearchHR1() {
    Double_t xmax     = nbins;
    Double_t a;
    Double_t source[nbins], dest[nbins];
-   Double_t sigma = 10, threshold = 0.8;
+   Double_t sigma = 10, threshold = 0.78;
+   Int_t deconiterations = 4, averWindow = 2;
    // gROOT->ForceStyle();
  
    // import and pointing
@@ -61,7 +62,7 @@ void SearchHR1() {
  
    TSpectrum *s = new TSpectrum();
  
-   nfound = s->SearchHighRes(source, dest, nbins, sigma, threshold, kTRUE, 3, kTRUE, 2);
+   nfound = s->SearchHighRes(source, dest, nbins, sigma, threshold, kTRUE, deconiterations, kTRUE, averWindow);
    Double_t *xpeaks = s->GetPositionX();
    for (i = 0; i < nfound; i++) {
       a=xpeaks[i];
