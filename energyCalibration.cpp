@@ -15,6 +15,8 @@
 #include "TSpectrum.h"
 #include "TVirtualFitter.h"
 #include <cmath>
+#include "TFile.h"
+#include "TTree.h"
 
 void energyCalibration() {
     TFile *f1 = TFile::Open("data/deuterated-digitizer_1.root");
