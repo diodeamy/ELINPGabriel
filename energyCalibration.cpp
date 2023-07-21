@@ -25,9 +25,9 @@ void energyCalibration() {
     UShort_t detectorId;
     UShort_t energy;
     Int_t npeaks = 10;
-    auto binnum = pow(2, 14);
+    const Int_t binnum = pow(2, 14);
     auto binmin = 0;
-    auto binmax = pow(2, 14); 
+    auto binmax = binnum;
 
     f1->GetObject("events", tree1);
     f2->GetObject("events", tree2);
@@ -55,6 +55,6 @@ void energyCalibration() {
     h1->Draw();
 
     TSpectrum *s1 = new TSpectrum(2*npeaks);
-    Int_t pfound1 = s1->Search(h1, 2.7,"", 0.05);
+    Int_t pfound1 = s1->Search(h1, 2.7,"", 0.05);     
     printf("Found %d candidate peaks to fit \n", pfound1);
 }
