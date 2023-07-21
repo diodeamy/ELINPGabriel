@@ -61,4 +61,9 @@ void energyCalibration() {
     printf("Found %d candidate peaks to fit \n", pfound1);
 
     //attempts to find peaks in certain areas of the graph using TSpectrum::Search()
+    if (energy >1500 && energy<2500) {
+        Int_t pfound_area2 = s1->Search(h1, 2, "", 0.05);
+        printf("Found %d candidate peaks in area 2 to fit \n", pfound_area2);
+    }
+    
 }
