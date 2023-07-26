@@ -13,8 +13,8 @@ void SearchHR12() {
    UShort_t energy, energy_n;
    Double_t fPositionX_1[100], fPositionX_2[100], fPositionX_1_n[100], fPositionX_2_n[100];
    Double_t fPositionY_1[100], fPositionY_2[100], fPositionY_1_n[100], fPositionY_2_n[100];
-   Double_t refPositionX[18];
-   Double_t refPositionY[18];
+   Double_t refPositionX[18], refPositionX_n[18];
+   Double_t refPositionY[18], refPositionY_n[18];
    Int_t fNPeaks = 0;
    Int_t i, nfound_1, nfound_2, nfound_1_n, nfound_2_n, bin, bin_n;
    const Int_t nbins = 4000;
@@ -121,9 +121,9 @@ void SearchHR12() {
    d_2->SetLineColor(kRed);
    d_2->Draw("SAME");
  
-   printf("Reference dataset : Found %d candidate peaks in first part\n and %d in second part \n",nfound_1, nfound_2);
-   for (i=0;i<nfound_1;i++) printf("posx= %f, posy= %f\n",fPositionX_1[i], fPositionY_1[i]);
-   for (i=0;i<nfound_2;i++) printf("posx = %f, posy = %f\n", fPositionX_2[i], fPositionY_2[i]);
+   // printf("Reference dataset : Found %d candidate peaks in first part\n and %d in second part \n",nfound_1, nfound_2);
+   // for (i=0;i<nfound_1;i++) printf("posx= %f, posy= %f\n",fPositionX_1[i], fPositionY_1[i]);
+   // for (i=0;i<nfound_2;i++) printf("posx = %f, posy = %f\n", fPositionX_2[i], fPositionY_2[i]);
 
    
    // make single array of the found possitions
@@ -132,11 +132,11 @@ void SearchHR12() {
       refPositionY[i] = fPositionY_1[i];
    }
    for (i=0;i<nfound_2;i++) {
-      refPositionX[i] = fPositionX_2[i];
-      refPositionY[i] = fPositionY_2[i];
+      refPositionX[i+4] = fPositionX_2[i];
+      refPositionY[i+4] = fPositionY_2[i];
    }
+   // for(i=0; i<9;i++) printf("The positions of all peaks is: \n posx = %f    posy = %f \n", refPositionX[i], refPositionY[i]);
    printf("The positions for the 9 peaks of the reference dataset have been found. \n Calibrating other datasetss...\n");
-   for(i=0; i<17;i++) printf("The positions of all peaks is: \n posx = %f    posy = %f \n", refPositionX[i], refPositionY[i]);
    
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -242,11 +242,22 @@ void SearchHR12() {
    d_2_n->SetLineColor(kRed);
    d_2_n->Draw("SAME");
  
-   printf("Dataset n: Found %d candidate peaks in first part\n and %d in second part \n",nfound_1_n, nfound_2_n);
-   for( i=0;i<nfound_1_n;i++) printf("posx= %f, posy= %f\n",fPositionX_1_n[i], fPositionY_1_n[i]);
-   for (i=0;i<nfound_2_n;i++) printf("posx = %f, posy = %f\n", fPositionX_2_n[i], fPositionY_2_n[i]);
-   
+   // printf("Dataset n: Found %d candidate peaks in first part\n and %d in second part \n",nfound_1_n, nfound_2_n);
+   // for( i=0;i<nfound_1_n;i++) printf("posx= %f, posy= %f\n",fPositionX_1_n[i], fPositionY_1_n[i]);
+   // for (i=0;i<nfound_2_n;i++) printf("posx = %f, posy = %f\n", fPositionX_2_n[i], fPositionY_2_n[i]);
 
-   // LESSGOOOO, now we put all these peaks
+   for (i=0;i<nfound_1_n;i++) {
+      refPositionX_n[i] = fPositionX_1_n[i];
+      refPositionY_n[i] = fPositionY_1_n[i];
+   }
+   for (i=0;i<nfound_2_n;i++) {
+      refPositionX_n[i+4] = fPositionX_2_n[i];
+      refPositionY_n[i+4] = fPositionY_2_n[i];   
+   }
+   // for(i=0; i<9;i++) printf("The positions of all peaks is: \n posx = %f    posy = %f \n", refPositionX_n[i], refPositionY_n[i]);
+
+   // LESSGOOOO, now we can finally plot peak vs peak and try to fit a function through the graph for a conversion
+
+   
 
 }
