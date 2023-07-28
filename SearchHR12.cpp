@@ -4,6 +4,7 @@
 #include "TSpectrum.h"
 #include "TPolyMarker.h"
 #include "TTree.h"
+#include "TGraph.h"
 #include <iostream>
 
 
@@ -258,6 +259,14 @@ void SearchHR12() {
 
    // LESSGOOOO, now we can finally plot peak vs peak and try to fit a function through the graph for a conversion
 
-   
+   double x[100], y[100];
+   for (int i=0;i< 9;i++) {
+     x[i] = refPositionX[i];
+     y[i] = refPositionX_n[i];
+   }
+   auto g = new TGraph(10,x,y);
+   g->SetTitle("Peak calibration ;X: reference peaks;Y: dataset n peaks");
+   g->Draw("AC*");
+
 
 }
