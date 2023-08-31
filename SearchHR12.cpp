@@ -13,13 +13,12 @@ TH1F *getHistogram(string fileName);
 vector<Double_t> getPeaks(TH1F *hist, Int_t peaknr, Int_t xmin, Int_t xmax);
 vector<Double_t> getFitParams(vector<Double_t> v1, vector<Double_t> v2);
 vector<Double_t> getHistPeaks(string name);
+void applyParams(string fileName);
 
 void calibrationFinal()
 {
    auto peaks1 = getHistPeaks("data/deuterated-digitizer_1.root");
    auto peaks2 = getHistPeaks("data/deuterated-digitizer_2.root");
-
-   auto v = getFitParams(peaks1, peaks2);
 }
 
 vector<Double_t> getHistPeaks(std::string name)
@@ -95,4 +94,55 @@ vector<Double_t> getFitParams(vector<Double_t> v1, vector<Double_t> v2)
    return v;
 }
 
-// applyParams()
+// void applyParams(string fileName)
+// {
+//    UShort_t energy, detectorId;
+//    auto peaks1 = getHistPeaks("data/deuterated-digitizer_1.root");
+//    auto peaks2 = getHistPeaks("data/deuterated-digitizer_2.root");
+//    vector<Double_t> v = getFitParams(peaks1, peaks2);
+
+//    const char *filenamechar = fileName.c_str();
+//    TFile *f = TFile::Open(filenamechar);
+
+//    auto T = (TTree *)f->Get("events");
+//    T->SetBranchAddress("energy", &energy);
+//    T->SetBranchAddress("detectorId", &detectorId);
+//    TFile *outputFile = new TFile("treefriend.root", "recreate");
+//    auto TF = T->CloneTree(0);
+
+//    Double_t originalE, calibratedE;
+//    TBranch *calibratedB = TF->Branch("calibratedE", &calibratedE);
+
+//    Long64_t nentries = T->GetEntries();
+//    for (int jentry; jentry < nentries; jentry++)
+//    {
+//       if (detectorId == 0)
+//       {
+//          T->GetEntry(jentry);
+//          calibratedE = originalE * v[0] + v[1];
+//          calibratedB->Fill();
+//       }
+//    }
+//    outputFile->Close();
+//    cout << v[0] << endl;
+//    cout << v[1] << endl;
+// }
+
+{
+   auto peaks1 = getHistPeaks("data/deuterated-digitizer_1.root");
+   auto peaks2 = getHistPeaks("data/deuterated-digitizer_2.root");
+   vector<Double_t> fitparams = getFitParams(peaks1, peaks2);
+
+   UShort_t calibratedE;
+   TBranch *calibratedEB = T->AddBranch(&calibratedE);
+
+   for (int jentry = 0; jentry < T->GetEntries(); jentry++)
+   {
+      if (detectorId == 0)
+      {
+         T->GetEntry();
+         calibratedE =
+             calibratedEB->Fill();
+      }
+   }
+}
