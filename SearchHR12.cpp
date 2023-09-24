@@ -13,7 +13,7 @@ TH1F *getHistogram(string fileName);
 vector<Double_t> getPeaks(TH1F *hist, Int_t peaknr, Int_t xmin, Int_t xmax);
 vector<Double_t> getFitParams(vector<Double_t> v1, vector<Double_t> v2);
 vector<Double_t> getHistPeaks(string name);
-void applyParams(string fileName);
+TTree makefriendtr(string fileName);
 
 void calibrationFinal()
 {
@@ -93,56 +93,46 @@ vector<Double_t> getFitParams(vector<Double_t> v1, vector<Double_t> v2)
    vector<Double_t> v(slope, intercept);
    return v;
 }
-
-// void applyParams(string fileName)
-// {
-//    UShort_t energy, detectorId;
-//    auto peaks1 = getHistPeaks("data/deuterated-digitizer_1.root");
-//    auto peaks2 = getHistPeaks("data/deuterated-digitizer_2.root");
-//    vector<Double_t> v = getFitParams(peaks1, peaks2);
-
-//    const char *filenamechar = fileName.c_str();
-//    TFile *f = TFile::Open(filenamechar);
-
-//    auto T = (TTree *)f->Get("events");
-//    T->SetBranchAddress("energy", &energy);
-//    T->SetBranchAddress("detectorId", &detectorId);
-//    TFile *outputFile = new TFile("treefriend.root", "recreate");
-//    auto TF = T->CloneTree(0);
-
-//    Double_t originalE, calibratedE;
-//    TBranch *calibratedB = TF->Branch("calibratedE", &calibratedE);
-
-//    Long64_t nentries = T->GetEntries();
-//    for (int jentry; jentry < nentries; jentry++)
-//    {
-//       if (detectorId == 0)
-//       {
-//          T->GetEntry(jentry);
-//          calibratedE = originalE * v[0] + v[1];
-//          calibratedB->Fill();
-//       }
-//    }
-//    outputFile->Close();
-//    cout << v[0] << endl;
-//    cout << v[1] << endl;
-// }
-
+TTree makefriendtr(string fileName, string file2Name)
+// should make a friend tree of the file to be calibrated (so not digitizer_1 but digitizer_3)
+// and add a new branch to hold the calibrated energy
 {
-   auto peaks1 = getHistPeaks("data/deuterated-digitizer_1.root");
-   auto peaks2 = getHistPeaks("data/deuterated-digitizer_2.root");
-   vector<Double_t> fitparams = getFitParams(peaks1, peaks2);
+   const char *file2namechar = file2Name.c_str();
+   const char *filenamechar = fileName.c_str();
+   TFile *f1 = TFile::Open(filenamechar);
+   auto T = (TTree *)f1->Get("events");
 
-   UShort_t calibratedE;
-   TBranch *calibratedEB = T->AddBranch(&calibratedE);
+   TFile *ff = new TFile("treefriend.root", "recreate");
+   TTree *TF = T->CloneTree(0);
+   TF->SetName("TF");
 
-   for (int jentry = 0; jentry < T->GetEntries(); jentry++)
+   UShort_t energy, detectorId;
+   TF->SetBranchAddress("energy", &energy);
+   TF->SetBranchAddress("detectorId", &detectorId);
+
+   if (detectorId == 0)
    {
-      if (detectorId == 0)
-      {
-         T->GetEntry();
-         calibratedE =
-             calibratedEB->Fill();
-      }
+      TF->GetBranch("events")->SetFile("eventsd0c.root");
+      TF->CopyEntries(T);
    }
+
+   TF->Print();
+   TF->Write();
+   delete ff;
+
+   auto parameters = getFitParams(getHistPeaks(fileName), getHistPeaks(file2Name));
+
+   Long64_t nentries = TF->GetEntries();
+   for (int jentry = 0; jentry < nentries; jentry++)
+   {
+      TF->GetEntry(jentry);
+      jentry *parameters[0] + parameters[1];
+   }
+
+   for (int jentry = 0; jentry < 100; jentry++)
+   {
+      cout << TF->GetEntry(jentry) << endl;
+      cout << T->GetEntry(jentry) << endl;
+   }
+   return {};
 }
