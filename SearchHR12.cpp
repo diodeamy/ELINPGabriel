@@ -93,46 +93,71 @@ vector<Double_t> getFitParams(vector<Double_t> v1, vector<Double_t> v2)
    vector<Double_t> v(slope, intercept);
    return v;
 }
-TTree makefriendtr(string fileName, string file2Name)
-// should make a friend tree of the file to be calibrated (so not digitizer_1 but digitizer_3)
-// and add a new branch to hold the calibrated energy
+// TTree makefriendtr(string fileName, string file2Name)
+// // should make a friend tree of the file to be calibrated (so not digitizer_1 but digitizer_3)
+// // and add a new branch to hold the calibrated energy
+// {
+//    const char *file2namechar = file2Name.c_str();
+//    const char *filenamechar = fileName.c_str();
+//    TFile *f1 = TFile::Open(filenamechar);
+//    auto T = (TTree *)f1->Get("events");
+
+//    TFile *ff = new TFile("treefriend.root", "recreate");
+//    TTree *TF = T->CloneTree(0);
+//    TF->SetName("TF");
+
+//    UShort_t energy, detectorId;
+//    TF->SetBranchAddress("energy", &energy);
+//    TF->SetBranchAddress("detectorId", &detectorId);
+
+//    if (detectorId == 0)
+//    {
+//       TF->GetBranch("events")->SetFile("eventsd0c.root");
+//       TF->CopyEntries(T);
+//    }
+
+//    TF->Print();
+//    TF->Write();
+//    delete ff;
+
+//    auto parameters = getFitParams(getHistPeaks(fileName), getHistPeaks(file2Name));
+
+//    Long64_t nentries = TF->GetEntries();
+//    for (int jentry = 0; jentry < nentries; jentry++)
+//    {
+//       TF->GetEntry(jentry);
+//       jentry *parameters[0] + parameters[1];
+//    }
+
+//    for (int jentry = 0; jentry < 100; jentry++)
+//    {
+//       cout << TF->GetEntry(jentry) << endl;
+//       cout << T->GetEntry(jentry) << endl;
+//    }
+//    return {};
+// }
+
+void addParametrizedBranch(string fileName)
 {
-   const char *file2namechar = file2Name.c_str();
-   const char *filenamechar = fileName.c_str();
-   TFile *f1 = TFile::Open(filenamechar);
-   auto T = (TTree *)f1->Get("events");
-
-   TFile *ff = new TFile("treefriend.root", "recreate");
-   TTree *TF = T->CloneTree(0);
-   TF->SetName("TF");
-
+   TFile f("fileName", "update");
+   UShort_t newenergy;
    UShort_t energy, detectorId;
-   TF->SetBranchAddress("energy", &energy);
-   TF->SetBranchAddress("detectorId", &detectorId);
 
-   if (detectorId == 0)
-   {
-      TF->GetBranch("events")->SetFile("eventsd0c.root");
-      TF->CopyEntries(T);
-   }
+   // const char *filenamechar = fileName.c_str();
+   // TFile *f1 = TFile::Open(filenamechar);
+   // auto tree = (TTree *)f1->Get("events");
 
-   TF->Print();
-   TF->Write();
-   delete ff;
+   auto tree = f.Get<TTree>("tree");
 
-   auto parameters = getFitParams(getHistPeaks(fileName), getHistPeaks(file2Name));
+   TBranch *newbr = tree->Branch("newenergy", &newenergy);
 
-   Long64_t nentries = TF->GetEntries();
+   tree->SetBranchAddress("energy", &energy);
+   tree->SetBranchAddress("detectorId", &detectorId);
+
+   Long64_t nentries = tree->GetEntries();
+
    for (int jentry = 0; jentry < nentries; jentry++)
    {
-      TF->GetEntry(jentry);
-      jentry *parameters[0] + parameters[1];
+      newenergy =
    }
-
-   for (int jentry = 0; jentry < 100; jentry++)
-   {
-      cout << TF->GetEntry(jentry) << endl;
-      cout << T->GetEntry(jentry) << endl;
-   }
-   return {};
 }
